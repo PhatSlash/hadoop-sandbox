@@ -32,9 +32,9 @@ import static org.junit.Assert.*;
  *
  * @author Loïc Mercier des Rochettes <loic.mercier.d@gmail.com>
  */
-public class GrouJobTest {
+public class GroupWeatherIndexJobTest {
 
-    public GrouJobTest() {
+    public GroupWeatherIndexJobTest() {
     }
 
     @BeforeClass
@@ -55,6 +55,7 @@ public class GrouJobTest {
 
     /**
      * Test of run method, of class AverageJob.
+     * @throws java.lang.Exception
      */
     @Test
     public void testRun() throws Exception {
@@ -62,11 +63,11 @@ public class GrouJobTest {
         Configuration hc;
         hc = HBaseConfiguration.create();
 
-        GroupTemperatureJob instance = new GroupTemperatureJob();
+        GroupWeatherIndexJob instance = new GroupWeatherIndexJob();
         instance.run(null);
 
         HTable table = new HTable(hc, "meteo:results");
-        Get g = new Get(Bytes.toBytes("Temperature moyenne"));
+        Get g = new Get(Bytes.toBytes("Temperature ressentie"));
         Result r = table.get(g);
         
         byte[] value = r.getValue(Bytes.toBytes("results"), Bytes.toBytes("temperature moyenne"));

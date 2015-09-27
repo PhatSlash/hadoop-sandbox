@@ -55,10 +55,10 @@ public class AverageTemperatureJobTest {
 
     /**
      * Test of run method, of class AverageTemperatureJob.
+     * @throws java.lang.Exception
      */
     @Test
     public void testRun() throws Exception {
-        System.out.println("run");
         Configuration hc;
         hc = HBaseConfiguration.create();
 
