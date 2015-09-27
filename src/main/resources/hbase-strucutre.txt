@@ -1,0 +1,4 @@
+
+create_namespace 'meteo'
+create 'meteo:stations', 'coordinates', 'parameters'
+create 'meteo:results', 'results'

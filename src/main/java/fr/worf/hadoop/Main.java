@@ -15,23 +15,52 @@
  */
 package fr.worf.hadoop;
 
-import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.util.Tool;
+import fr.worf.hadoop.stats.jobs.AverageTemperatureJob;
+import fr.worf.hadoop.stats.jobs.GroupTemperatureJob;
+import fr.worf.hadoop.stats.jobs.GroupWeatherIndexJob;
+import java.io.IOException;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author Loïc Mercier des Rochettes <loic.mercier.d@gmail.com>
  */
-public class Main extends Configured implements Tool {
+public class Main {
 
-    public static void main(String[] args) throws Exception {
-        //int rc = ToolRunner.run(new TopK(), args);
-        //System.exit(rc);
-        System.out.println("Test Hadoop First Milestone");
+    private static Logger logger = Logger.getLogger(Main.class);
+
+    public static void showResults() throws IOException {
+        Configuration config = HBaseConfiguration.create();
+        HTable table = new HTable(config, "meteo:results");
+
+        Get getavg = new Get("Temperature moyenne".getBytes());
+        Get getgroups = new Get("Temperature ressentie".getBytes());
+
+        Result avg = table.get(getavg);
+        Result groups = table.get(getgroups);
+
+        logger.debug(Bytes.toInt(avg.getValue("results".getBytes(), "average temperature".getBytes())));
+        logger.debug(Bytes.toInt(avg.getValue("results".getBytes(), "average temperature".getBytes())));
+        logger.debug(Bytes.toInt(avg.getValue("results".getBytes(), "Average".getBytes())));
+        logger.debug(Bytes.toInt(avg.getValue("results".getBytes(), "Cold".getBytes())));
+        logger.debug(Bytes.toInt(avg.getValue("results".getBytes(), "Hot".getBytes())));
+        logger.debug(Bytes.toInt(groups.getValue("results".getBytes(), "Average".getBytes())));
+        logger.debug(Bytes.toInt(groups.getValue("results".getBytes(), "Cold".getBytes())));
+        logger.debug(Bytes.toInt(groups.getValue("results".getBytes(), "Hot".getBytes())));
     }
 
-    @Override
-    public int run(String[] strings) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static void main(String[] args) throws Exception {
+        AverageTemperatureJob avg = new AverageTemperatureJob();
+        avg.run(null);
+        //GroupTemperatureJob grp = new GroupTemperatureJob();
+        GroupWeatherIndexJob wigrp = new GroupWeatherIndexJob();
+        wigrp.run(null);
+        showResults();
     }
 }
