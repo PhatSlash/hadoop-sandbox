@@ -48,21 +48,25 @@ public class WeatherIndexMapper extends TableMapper<Text, IntWritable> {
         logger.debug(value.toString());
         logger.debug(value.getValue(CF, TEMP_ATTR));
         // Division par 10 des attributs car ils sont *10 en base pour n'avoir que des int et garder une percision au 1/10.
-        double temperature = Bytes.toInt(value.getValue(CF, TEMP_ATTR)) / 10;
-        double windspeed = Bytes.toInt(value.getValue(CF, WIND_ATTR)) / 10;
-        double humidity = Bytes.toInt(value.getValue(CF, HUMI_ATTR)) / 10;
+        double temperature = Bytes.toInt(value.getValue(CF, TEMP_ATTR)) / 10.0;
+        double windspeed = Bytes.toInt(value.getValue(CF, WIND_ATTR)) / 10.0;
+        double humidity = Bytes.toInt(value.getValue(CF, HUMI_ATTR)) / 10.0;
 
         double index = 0;
         if (temperature < 10) {
             // Calcul de la temperture ressentie par refroidissement éolien
-            index = 13.12 + 0.6215 * temperature + (0.3965 * temperature - 11.37) * windspeed;
+            if (windspeed > 4.8) {
+                index = 13.12 + 0.6215 * temperature + (0.3965 * temperature - 11.37) * windspeed;
+            } else {
+                index = temperature + 0.2 * (0.1345 * temperature - 1.59) * windspeed;
+            }
         } else {
             // calcul de la racine huitème du taux d'humidité
-            double racine = Math.exp(1.0/8.0* Math.log(humidity));
-            
+            double racine = Math.exp(1.0 / 8.0 * Math.log(humidity));
+
             // calcul du point de rosée
-            double pr = racine * (112+(0.9*temperature)) + (0.1*temperature) - 112;
-            
+            double pr = racine * (112 + (0.9 * temperature)) + (0.1 * temperature) - 112;
+
             // Calcul de l'indice humidex
             index = temperature + 0.5555 * (6.11 * Math.exp(5417.7530 * (1 / 273.16 - 1 / pr)) - 10);
         }

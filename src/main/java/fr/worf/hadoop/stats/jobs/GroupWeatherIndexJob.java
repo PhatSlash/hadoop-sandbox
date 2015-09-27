@@ -34,7 +34,8 @@ import org.apache.hadoop.util.Tool;
  * @author Loïc Mercier des Rochettes <loic.mercier.d@gmail.com>
  */
 public class GroupWeatherIndexJob extends Configured implements Tool {
-        private static final Configuration hc = HBaseConfiguration.create();
+
+    private static final Configuration hc = HBaseConfiguration.create();
     private final Job job;
 
     public GroupWeatherIndexJob() throws IOException {
@@ -53,7 +54,7 @@ public class GroupWeatherIndexJob extends Configured implements Tool {
         TableMapReduceUtil.initTableReducerJob("meteo:results", GroupReducer.class, job);
 
         job.setNumReduceTasks(1);
-        System.out.print("Lancement du job");
+
         if (job.waitForCompletion(true)) {
             System.out.println("Ok");
         } else {
