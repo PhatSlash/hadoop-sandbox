@@ -3,7 +3,7 @@ Projet "bac à sable" pour expérimenter Hadoop.
 
 Informations utiles :
  * Mockup contient une classe qui permet de remplir la base avec de fausses données.
- * Scratchpad contient des classes principale d'expérimentation.
+ * Scratchpad contient des classes principales d'expérimentation.
  * Les tests ne sont encore que des ébauches.
   
 Comment démarrer :
